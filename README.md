@@ -1,6 +1,6 @@
-# TryHackMe
+# Craft TryHackMe
 
-Ranking tracker for TryHackMe
+TryHackMe ranking and score tracker for Craft CMS
 
 ## Requirements
 

@@ -20,7 +20,8 @@
         "handle": "tryhackme",
         "name": "TryHackMe",
         "developer": "mEsUsah",
-        "documentationUrl": "",
+        "developerUrl": "https://www.haxor.no",
+        "documentationUrl": "https://github.com/mEsUsah/craft-tryhackme",
         "class": "mesusah\\crafttryhackme\\TryHackMe"
     },
     "scripts": {
@@ -37,6 +38,12 @@
             "yiisoft/yii2-composer": true,
             "craftcms/plugin-installer": true
         }
-    }
+    },
+    "authors": [
+        {
+            "name": "mEsUsah",
+            "homepage": "https://www.haxor.no"
+        }
+    ]
 }
 
