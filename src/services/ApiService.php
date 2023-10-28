@@ -46,6 +46,10 @@ class ApiService extends Component
             }
         }
 
+        // Get completed rooms
+        $data['completedRooms'] = $this->getCompletedRooms($username);
+
+
         return $data;
      }
 
@@ -82,12 +86,30 @@ class ApiService extends Component
     /**
      * Get users badges from the TryHackMe API
      * 
-     * @param null
+     * @param string $username
      * @return array
      */
     public function getBadgesUser($username)
     {
         $url = "{$this->webEndpoint}/api/badges/get/{$username}";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $json = json_decode($output, true);
+        return $json;
+    }
+
+    /**
+     * Get users badges from the TryHackMe API
+     * 
+     * @param string $username
+     * @return array
+     */
+    public function getCompletedRooms($username)
+    {
+        $url = "{$this->webEndpoint}/api/all-completed-rooms?username={$username}&limit=1000";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
