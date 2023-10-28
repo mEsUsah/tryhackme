@@ -17,23 +17,36 @@ class ApiService extends Component
      * @param string $username
      * @return array
      */
-
      public function userData($username)
      {
-         $data = $this->getUserRank($username);
-         
-         $badges = $this->getBadgesAll();
-         foreach ($badges as $badge) {
-             $data['badges'][$badge['name']] = [
-                 'title' => $badge['title'],
-                 'name' => $badge['name'],
-                 'description' => $badge['description'],
-                 'image' => $this->assetsEndpoint . $badge['image'],
-                 'earned' => false,
-             ];
-         }
+        $data = [
+            'userName' => $username,
+        ];
 
-         return $data;
+        // Get user rank, score and avatar
+        $data = array_merge($data, $this->getUserRank($username));
+         
+        // Get all badges
+        $badges = $this->getBadgesAll();
+        foreach ($badges as $badge) {
+            $data['badges'][$badge['name']] = [
+                'title' => $badge['title'],
+                'name' => $badge['name'],
+                'description' => $badge['description'],
+                'image' => $this->assetsEndpoint . $badge['image'],
+                'earned' => false,
+            ];
+        }
+
+        // Check if user has earned any badges
+        $earnedBadges = $this->getBadgesUser($username);
+        foreach ($earnedBadges as $badge) {
+            if(isset($data['badges'][$badge['name']])) {
+                $data['badges'][$badge['name']]['earned'] = true;
+            }
+        }
+
+        return $data;
      }
 
     public function getUserRank($username)
@@ -57,6 +70,24 @@ class ApiService extends Component
     public function getBadgesAll()
     {
         $url = "{$this->webEndpoint}/api/badges/get";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $json = json_decode($output, true);
+        return $json;
+    }
+
+    /**
+     * Get users badges from the TryHackMe API
+     * 
+     * @param null
+     * @return array
+     */
+    public function getBadgesUser($username)
+    {
+        $url = "{$this->webEndpoint}/api/badges/get/{$username}";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); 
