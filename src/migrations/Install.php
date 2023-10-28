@@ -17,26 +17,20 @@ class Install extends Migration
          * Tables
          */
 
-        // Craete table tryhackme_country
+        // Create table tryhackme_country
         $this->createTable('{{%tryhackme_country}}', [
             'id integer auto_increment primary key',
             'name varchar(255) not null',
             'handle varchar(255) not null',
         ]);
 
-        // Craete table tryhackme_user
+        // Create table tryhackme_user
         $this->createTable('{{%tryhackme_user}}', [
             'id integer auto_increment primary key',
             'name varchar(255) not null',
             'country_id integer not null',
         ]);
 
-        // Craete table tryhackme_user_country
-        $this->createTable('{{%tryhackme_user_country}}', [
-            'id integer auto_increment primary key',
-            'user_id integer not null',
-            'country_id integer not null',
-        ]);
 
         // Create table tryhackme_user_score
         $this->createTable('{{%tryhackme_user_score}}', [
@@ -59,27 +53,6 @@ class Install extends Migration
         /**
          * Foreign keys
          */
-
-        // Add foreign keys for table tryhackme_user_country
-        $this->addForeignKey(
-            'fk-tryhackme_user_country-user_id',
-            '{{%tryhackme_user_country}}',
-            'user_id',
-            '{{%tryhackme_user}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tryhackme_user_country-country_id',
-            '{{%tryhackme_user_country}}',
-            'country_id',
-            '{{%tryhackme_country}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
 
         // Add foreign key for table tryhackme_user
         $this->addForeignKey(
@@ -122,7 +95,6 @@ class Install extends Migration
      */
     public function safeDown(): bool
     {
-        $this->dropTable('{{%tryhackme_user_country}}');
         $this->dropTable('{{%tryhackme_user_rank}}');
         $this->dropTable('{{%tryhackme_user_score}}');
         $this->dropTable('{{%tryhackme_user}}');
