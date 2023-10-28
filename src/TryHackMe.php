@@ -11,6 +11,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterCpNavItemsEvent;
 use mesusah\crafttryhackme\models\Settings;
 use mesusah\crafttryhackme\variables\TryHackMeVariable;
+use mesusah\crafttryhackme\services\ApiService;
 
 /**
  * TryHackMe plugin
@@ -30,7 +31,7 @@ class TryHackMe extends Plugin
     {
         return [
             'components' => [
-                // Define component configs here...
+                'api' => ApiService::class,
             ],
         ];
     }
