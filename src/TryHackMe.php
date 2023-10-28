@@ -12,6 +12,7 @@ use craft\events\RegisterCpNavItemsEvent;
 use mesusah\crafttryhackme\models\Settings;
 use mesusah\crafttryhackme\variables\TryHackMeVariable;
 use mesusah\crafttryhackme\services\UserService;
+use mesusah\crafttryhackme\services\LeaderboardService;
 
 /**
  * TryHackMe plugin
@@ -32,6 +33,7 @@ class TryHackMe extends Plugin
         return [
             'components' => [
                 'user' => UserService::class,
+                'leaderboard' => LeaderboardService::class,
             ],
         ];
     }

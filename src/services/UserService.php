@@ -2,9 +2,8 @@
 
 namespace mesusah\crafttryhackme\services;
 
-use mesusah\crafttryhackme\TryHackMe;
-
 use craft\base\Component;
+use mesusah\crafttryhackme\TryHackMe;
 
 class UserService extends Component
 {
