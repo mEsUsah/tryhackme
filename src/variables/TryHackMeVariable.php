@@ -37,6 +37,6 @@ class TryHackMeVariable
     public function userData()
     {
         $username = TryHackMe::getInstance()->getSettings()->username;
-        return TryHackMe::getInstance()->api->userData($username);
+        return TryHackMe::getInstance()->user->userData($username);
     }
 }

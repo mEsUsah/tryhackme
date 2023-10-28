@@ -6,7 +6,7 @@ use mesusah\crafttryhackme\TryHackMe;
 
 use craft\base\Component;
 
-class ApiService extends Component
+class UserService extends Component
 {
     private $webEndpoint = "https://tryhackme.com";
     private $assetsEndpoint = "https://assets.tryhackme.com";
