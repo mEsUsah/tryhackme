@@ -3,8 +3,11 @@
 namespace mesusah\crafttryhackme;
 
 use Craft;
+use yii\base\Event;
 use craft\base\Model;
 use craft\base\Plugin;
+use craft\web\twig\variables\Cp;
+use craft\events\RegisterCpNavItemsEvent;
 use mesusah\crafttryhackme\models\Settings;
 
 /**
@@ -39,6 +42,18 @@ class TryHackMe extends Plugin
             $this->attachEventHandlers();
             // ...
         });
+
+        Event::on(
+            Cp::class,
+            Cp::EVENT_REGISTER_CP_NAV_ITEMS,
+            function(RegisterCpNavItemsEvent $event) {
+                $event->navItems[] = [
+                    'url' => 'tryhackme/dashboard',
+                    'label' => 'TryHackMe',
+                    'icon' => '@mesusah/crafttryhackme/icon.svg',
+                ];
+            }
+        );
     }
 
     protected function createSettingsModel(): ?Model
@@ -59,4 +74,6 @@ class TryHackMe extends Plugin
         // Register event handlers here ...
         // (see https://craftcms.com/docs/4.x/extend/events.html to get started)
     }
+
+    
 }
