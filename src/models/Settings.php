@@ -13,6 +13,7 @@ class Settings extends Model
 {
     public $username = '';
     public $country = '';
+    public $countryCompetition = [];
 
     public function data(){
         $countries = Country::find()->all();

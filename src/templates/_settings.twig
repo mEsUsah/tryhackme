@@ -2,6 +2,7 @@
 {# @var settings \mesusah\crafttryhackme\models\Settings #}
 
 {% import '_includes/forms.twig' as forms %}
+{% set countries = settings.data.countries|sort() %}
 
 {{ forms.textField({
     first: true,
@@ -11,10 +12,8 @@
     value: settings.username
 }) }}
 
-{% set countries = settings.data.countries|sort() %}
 {% set selectOptions = {"": "Select a country"} %}
 {% set selectOptions = selectOptions|merge(countries) %}
-
 {{ forms.selectField({
     label: 'Country',
     instructions: 'Choose your home country.',
@@ -23,4 +22,13 @@
     options: selectOptions,
     value: settings.country,
     order: 'desc'
+}) }}
+
+{{ forms.checkboxGroupField({
+    label: 'Geographical competition group',
+    instructions: 'Choose one or more options from the list.',
+    id: 'countryCompetition',
+    name: 'countryCompetition',
+    options: countries,
+    values: settings.countryCompetition
 }) }}
