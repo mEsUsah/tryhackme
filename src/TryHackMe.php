@@ -7,8 +7,10 @@ use yii\base\Event;
 use craft\base\Model;
 use craft\base\Plugin;
 use craft\web\twig\variables\Cp;
+use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterCpNavItemsEvent;
 use mesusah\crafttryhackme\models\Settings;
+use mesusah\crafttryhackme\variables\TryHackMeVariable;
 
 /**
  * TryHackMe plugin
@@ -52,6 +54,17 @@ class TryHackMe extends Plugin
                     'label' => 'TryHackMe',
                     'icon' => '@mesusah/crafttryhackme/icon.svg',
                 ];
+            }
+        );
+
+        // Register our variables
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('tryhackme', TryHackMeVariable::class);
             }
         );
     }
