@@ -6,6 +6,21 @@
 {{ forms.textField({
     first: true,
     label: 'Username',
+    instructions: 'Yuor username on TryHackMe.',
     name: 'username',
     value: settings.username
+}) }}
+
+{% set countries = settings.data.countries|sort() %}
+{% set selectOptions = {"": "Select a country"} %}
+{% set selectOptions = selectOptions|merge(countries) %}
+
+{{ forms.selectField({
+    label: 'Country',
+    instructions: 'Choose your home country.',
+    id: 'country',
+    name: 'country',
+    options: selectOptions,
+    value: settings.country,
+    order: 'desc'
 }) }}
