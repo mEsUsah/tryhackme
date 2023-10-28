@@ -5,10 +5,8 @@ namespace mesusah\crafttryhackme\migrations;
 use Craft;
 use craft\db\Migration;
 
-/**
- * m231028_093600_create_table migration.
- */
-class m231028_093600_create_table extends Migration
+
+class Install extends Migration
 {
     /**
      * @inheritdoc
