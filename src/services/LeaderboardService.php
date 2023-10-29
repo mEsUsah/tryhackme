@@ -7,6 +7,7 @@ use craft\base\Component;
 use mesusah\crafttryhackme\TryHackMe;
 use mesusah\crafttryhackme\models\Country;
 use mesusah\crafttryhackme\models\User;
+use mesusah\crafttryhackme\models\UserScore;
 
 class LeaderboardService extends Component
 {
@@ -113,7 +114,8 @@ class LeaderboardService extends Component
     }
 
     /**
-     * Import the scoreboard for a specific location to database
+     * Import the scoreboard for a specific location to database.
+     * Will update existing users and scores on current date.
      * 
      * @param string $location
      * @return void
@@ -122,14 +124,16 @@ class LeaderboardService extends Component
     {
         // get all users in scoreboard
         $location = Country::find()->where(['id' => $country_id])->one()->handle;
-        $ranks = $this->getScoreboard($location);
+        $ranks = $this->getScoreboard($location, false);
         
-        $importCount = 0;
-        $updateCount = 0;
+        $usersCreated = 0;
+        $usersUpdated = 0;
+        $scoreCreated = 0;
+        $scoreUpdated = 0;
 
         try {
-            // Find/create user in database
             foreach ($ranks as $rank){
+                // Create/update user in database
                 $user = User::find()->where(['name' => $rank['username']])->one();
                 if ($user == null) {
                     $user = new User();
@@ -137,27 +141,53 @@ class LeaderboardService extends Component
                     $user->avatar = $rank['avatar'];
                     $user->country_id = $country_id;
                     $user->save();
-                    $importCount++;
+                    $usersCreated++;
                 } else {
                     $user->avatar = $rank['avatar'];
                     $user->save();
-                    $updateCount++;
+                    $usersUpdated++;
+                }
+
+                // Create/update user_score in database
+                $user_score = UserScore::find()->where([
+                    'user_id' => $user->id,
+                    'date' => date("Y-m-d")
+                ])->one();
+                if($user_score == null){
+                    $user_score = new UserScore();
+                    $user_score->user_id = $user->id;
+                    $user_score->date = date("Y-m-d");
+                    $user_score->score = $rank['points'];
+                    $user_score->save();
+                    $scoreCreated++;
+                } else {
+                    $user_score->score = $rank['points'];
+                    $user_score->save();
+                    $scoreUpdated++;
                 }
             }
         } catch (\Throwable $th) {
             return [
                 'error' => $th->getMessage(),
                 'users' => [
-                    'import' => $importCount, 
-                    'update' => $updateCount
+                    'import' => $usersCreated, 
+                    'update' => $usersUpdated
+                ],
+                'scores' => [
+                    'created' => $scoreCreated,
+                    'updated' => $scoreUpdated
                 ]
             ];
         }
 
         return [
             'users' => [
-                'import' => $importCount, 
-                'update' => $updateCount
+                'import' => $usersCreated, 
+                'update' => $usersUpdated
+            ],
+            'scores' => [
+                'created' => $scoreCreated,
+                'updated' => $scoreUpdated
             ]
         ];
     }
