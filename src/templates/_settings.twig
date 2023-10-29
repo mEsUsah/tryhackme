@@ -12,14 +12,12 @@
     value: settings.username
 }) }}
 
-{% set selectOptions = {"": "Select a country"} %}
-{% set selectOptions = selectOptions|merge(countries) %}
 {{ forms.selectField({
     label: 'Country',
     instructions: 'Choose your home country.',
     id: 'country',
     name: 'country',
-    options: selectOptions,
+    options: countries,
     value: settings.country,
     order: 'desc'
 }) }}
