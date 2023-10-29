@@ -39,6 +39,7 @@ class UserService extends Component
 
         // Check if user has earned any badges
         $earnedBadges = $this->getBadgesUser($username);
+        $data['earnedBadges'] = sizeof($earnedBadges);
         foreach ($earnedBadges as $badge) {
             if(isset($data['badges'][$badge['name']])) {
                 $data['badges'][$badge['name']]['earned'] = true;
