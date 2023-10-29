@@ -24,7 +24,7 @@ class LeaderboardService extends Component
      *
      * From any other plugin file, call it like this:
      *
-     *     Haxor::getInstance()->thm->getScoreboard($locations)
+     *     TryHackMe::getInstance()->thm->getScoreboard($locations)
      *
      * @return mixed
      */
@@ -117,8 +117,8 @@ class LeaderboardService extends Component
      * Import the scoreboard for a specific location to database.
      * Will update existing users and scores on current date.
      * 
-     * @param string $location
-     * @return void
+     * @param Country $country
+     * @return array
      */
     public function importLeaderboard(Country $country)
     {
@@ -189,5 +189,34 @@ class LeaderboardService extends Component
                 'updated' => $scoreUpdated
             ]
         ];
+    }
+
+    public function readLeaderboard(array $params)
+    {
+        // Check if params are valid
+        if(!isset($params['countries']) or sizeof($params['countries']) == 0){
+            return false;
+        }
+
+        $country_ids = [];
+        foreach ($params['countries'] as $country) {
+            array_push($country_ids, $country->id);
+        }
+
+        // Check if date is set, if not set to today
+        if(!isset($params['date']) or $params['date'] == ""){
+            $params['date'] = date("Y-m-d");
+        }
+
+        // Get top scores for the countries
+        $scores = UserScore::find()
+            ->where(['date' => $params['date']])
+            ->andWhere(['tryhackme_user.country_id' => $country_ids])
+            ->leftJoin('tryhackme_user', 'tryhackme_user.id = tryhackme_user_score.user_id')
+            ->orderBy(['score' => SORT_DESC])
+            ->limit(50)
+            ->all();
+
+        return $scores;
     }
 }
