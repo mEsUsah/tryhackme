@@ -10,6 +10,13 @@ This plugin requires Craft CMS 4.5.0 or later, and PHP 8.0.2 or later.
 
 You can install this plugin from the Plugin Store or with Composer.
 
+### Crontab
+To automatically import daily leaderboards, add this to your crontab:
+```bash
+55 23 * * * <username> /path/to/project/root php craft tryhackme/leaderboard/import
+```
+
+
 #### From the Plugin Store
 
 Go to the Plugin Store in your project’s Control Panel and search for “TryHackMe”. Then press “Install”.
