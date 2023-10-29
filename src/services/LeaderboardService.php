@@ -120,11 +120,10 @@ class LeaderboardService extends Component
      * @param string $location
      * @return void
      */
-    public function importLeaderboard($country_id)
+    public function importLeaderboard(Country $country)
     {
         // get all users in scoreboard
-        $location = Country::find()->where(['id' => $country_id])->one()->handle;
-        $ranks = $this->getScoreboard($location, false);
+        $ranks = $this->getScoreboard($country->handle, false);
         
         $usersCreated = 0;
         $usersUpdated = 0;
@@ -139,7 +138,7 @@ class LeaderboardService extends Component
                     $user = new User();
                     $user->name = $rank['username'];
                     $user->avatar = $rank['avatar'];
-                    $user->country_id = $country_id;
+                    $user->country_id = $country->id;
                     $user->save();
                     $usersCreated++;
                 } else {
