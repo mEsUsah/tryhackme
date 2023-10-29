@@ -5,6 +5,8 @@ namespace mesusah\crafttryhackme\services;
 use Craft;
 use craft\base\Component;
 use mesusah\crafttryhackme\TryHackMe;
+use mesusah\crafttryhackme\models\Country;
+use mesusah\crafttryhackme\models\User;
 
 class LeaderboardService extends Component
 {
@@ -91,7 +93,7 @@ class LeaderboardService extends Component
     {
         $cacheKey = md5("tryHackMeScoreboard_" . $location);
         $cachedData = Craft::$app->cache->get($cacheKey);
-        if (!$cache || $cachedData != null ) {
+        if ($cache && $cachedData != null ) {
             return $cachedData;
         }
         
@@ -105,7 +107,58 @@ class LeaderboardService extends Component
         curl_setopt($_h, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
 
         $result = json_decode(curl_exec($_h), true);
-        Craft::$app->cache->set($cacheKey, $result, $this->cacheDuration);
-        return $result["ranks"];
+        $data = $result["ranks"];
+        Craft::$app->cache->set($cacheKey, $data, $this->cacheDuration);
+        return $data;
+    }
+
+    /**
+     * Import the scoreboard for a specific location to database
+     * 
+     * @param string $location
+     * @return void
+     */
+    public function importLeaderboard($country_id)
+    {
+        // get all users in scoreboard
+        $location = Country::find()->where(['id' => $country_id])->one()->handle;
+        $ranks = $this->getScoreboard($location);
+        
+        $importCount = 0;
+        $updateCount = 0;
+
+        try {
+            // Find/create user in database
+            foreach ($ranks as $rank){
+                $user = User::find()->where(['name' => $rank['username']])->one();
+                if ($user == null) {
+                    $user = new User();
+                    $user->name = $rank['username'];
+                    $user->avatar = $rank['avatar'];
+                    $user->country_id = $country_id;
+                    $user->save();
+                    $importCount++;
+                } else {
+                    $user->avatar = $rank['avatar'];
+                    $user->save();
+                    $updateCount++;
+                }
+            }
+        } catch (\Throwable $th) {
+            return [
+                'error' => $th->getMessage(),
+                'users' => [
+                    'import' => $importCount, 
+                    'update' => $updateCount
+                ]
+            ];
+        }
+
+        return [
+            'users' => [
+                'import' => $importCount, 
+                'update' => $updateCount
+            ]
+        ];
     }
 }
