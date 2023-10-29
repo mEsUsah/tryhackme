@@ -4,6 +4,7 @@ namespace mesusah\crafttryhackme\variables;
 
 use Craft;
 use mesusah\crafttryhackme\TryHackMe;
+use mesusah\crafttryhackme\models\Country;
 
 class TryHackMeVariable
 {
@@ -37,6 +38,10 @@ class TryHackMeVariable
     public function userData()
     {
         $username = TryHackMe::getInstance()->getSettings()->username;
-        return TryHackMe::getInstance()->user->userData($username);
+        $country = TryHackMe::getInstance()->getSettings()->country;
+        $contryName = Country::find()->where(['id' => $country])->one()->name;
+        $data = TryHackMe::getInstance()->user->userData($username);
+        $data['country'] = $contryName;
+        return $data;
     }
 }
