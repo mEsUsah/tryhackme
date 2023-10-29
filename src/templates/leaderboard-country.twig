@@ -18,7 +18,28 @@
 {% set selectedTab = 'leaderboardCountry' %}
 
 {% block content %}
-    {# <pre>
-        {{ dump(craft.tryhackme.importLeaderboard) }}
-    </pre> #}
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th></th>
+                <th>Score</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank in craft.tryhackme.leaderboardCountry %}
+                {% set user = rank.user.one() %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td><img src="{{ user.avatar }}" alt="{{ user.name }}" style="max-width: 80px"><td>
+                    <td>{{ rank.score }}</td>
+                    <td>{{ user.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <pre>
+        {{ dump(craft.tryhackme.leaderboardCountry) }}
+    </pre>
 {% endblock %}
