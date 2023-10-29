@@ -1,8 +1,26 @@
 {% extends "_layouts/cp.twig" %}
 {% set title = "TryHackMe"|t('plugin-handle') %}
+{% set userData = craft.tryhackme.userData %}
+{% set leaderboardLocations = craft.tryhackme.leaderboardLocations %}
+{% set leaderboardLocation = craft.tryhackme.leaderboardLocation %}
+{% set tabs = {
+  dashboard: {
+    label: 'Dashboard'|t('plugin-handle'),
+    url: '/admin/tryhackme/dashboard',
+  },
+  badges: {
+    label: 'Badges'|t('plugin-handle'),
+    url: '/admin/tryhackme/badges',
+  },
+} %}
+{% set selectedTab = 'dashboard' %}
 
 {% block content %}
     <h2>User data:</h2>
-    <p>Username: {{ craft.tryhackme.username }}</p>
+    <p>Username: {{ craft.tryhackme.userName }}</p>
+    {# <p>Rank: {{ craft.tryhackme.getUserRank() }}</p> #}
+    <pre>
+        {{ dump(leaderboardLocation) }}
+    </pre>
 
 {% endblock %}
