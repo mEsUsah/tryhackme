@@ -24,29 +24,22 @@
     </div>
     <div class="card">
         <table class="data-table">
-        <thead>
-            <tr>
-                <th></th>
-                <th>{{ 'Name'|t('plugin-handle') }}</th>
-                <th>{{ 'Description'|t('plugin-handle') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set badges = userData.badges|sort %}
-            {% for badge in badges %}
-                <tr>
-                    <td>
-                        <img src="{{ badge.image }}" 
-                            alt="{{ badge.title }}" 
-                            style="max-width: 100px;"
-                            class="{{ badge.earned ? "" : "disabled" }}"
-                        >
-                    </td>
-                    <td>{{ badge.title }}</td>
-                    <td>{{ badge.description }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
+            <tbody>
+                {% set badges = userData.badges|sort %}
+                {% for badge in badges %}
+                    <tr>
+                        <td>
+                            <img src="{{ badge.image }}" 
+                                alt="{{ badge.title }}" 
+                                style="max-width: 40px;"
+                                class="{{ badge.earned ? "" : "disabled" }}"
+                            >
+                        </td>
+                        <td>{{ badge.title }}</td>
+                        <td>{{ badge.description }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 {% endblock %}
