@@ -2,6 +2,7 @@
 
 namespace mesusah\crafttryhackme\services;
 
+use Craft;
 use craft\base\Component;
 use mesusah\crafttryhackme\TryHackMe;
 
@@ -9,6 +10,7 @@ class UserService extends Component
 {
     private $webEndpoint = "https://tryhackme.com";
     private $assetsEndpoint = "https://assets.tryhackme.com";
+    private $cacheDuration = 3600;
 
     /**
      * Get the user rank from the TryHackMe API
@@ -18,6 +20,13 @@ class UserService extends Component
      */
      public function userData($username)
      {
+        // Check cache
+        $cacheKey = md5("tryHackMeUserData_" . $username);
+        $cachedData = Craft::$app->cache->get($cacheKey);
+        if ($cachedData != null ) {
+            return json_decode($cachedData, true);
+        }
+
         $data = [
             'userName' => $username,
         ];
@@ -49,6 +58,8 @@ class UserService extends Component
         // Get completed rooms
         $data['completedRooms'] = $this->getCompletedRooms($username);
 
+        // Cache data
+        Craft::$app->cache->set($cacheKey, json_encode($data), $this->cacheDuration);
 
         return $data;
      }
