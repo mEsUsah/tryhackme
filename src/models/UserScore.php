@@ -13,7 +13,7 @@ class UserScore extends ActiveRecord
         return '{{%tryhackme_user_score}}';
     }
 
-    public function user()
+    public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
