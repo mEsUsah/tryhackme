@@ -1,6 +1,10 @@
 # TODO
+## Installation fix:
+* Run all migrations on plugin update or install
+
 ## Settings: 
-*  Name of group of other countries
+* Name of group of other countries
+* Save settings to yaml config file.
 
 ## Control Panel section
 * Tab with leaderboard from group of other countries
