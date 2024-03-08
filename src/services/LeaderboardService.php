@@ -191,6 +191,20 @@ class LeaderboardService extends Component
         ];
     }
 
+    private function getCountryTopScore($countryIds, $date)
+    {
+        $scores = UserScore::find()
+            ->with("user")
+            ->leftJoin('tryhackme_user', 'tryhackme_user.id = tryhackme_user_score.user_id')
+            ->where(['date' => $date])
+            ->andWhere(['tryhackme_user.country_id' => $countryIds])
+            ->orderBy(['score' => SORT_DESC])
+            ->limit(50)
+            ->all();
+
+        return $scores;
+    }
+
     public function readLeaderboard(array $params)
     {
         // Check if params are valid
@@ -209,13 +223,16 @@ class LeaderboardService extends Component
         }
 
         // Get top scores for the countries
-        $scores = UserScore::find()
-            ->where(['date' => $params['date']])
-            ->andWhere(['tryhackme_user.country_id' => $country_ids])
-            ->leftJoin('tryhackme_user', 'tryhackme_user.id = tryhackme_user_score.user_id')
-            ->orderBy(['score' => SORT_DESC])
-            ->limit(50)
-            ->all();
+        $scores = $this->getCountryTopScore($country_ids, $params['date']);
+
+        // If no scores are found for today, import leaderboards
+        if(sizeof($scores) == 0){
+            foreach ($params['countries'] as $country) {
+                $this->importLeaderboard($country);
+            }
+            $scores = $this->getCountryTopScore($country_ids, $params['date']);
+        }
+        
 
         return $scores;
     }
